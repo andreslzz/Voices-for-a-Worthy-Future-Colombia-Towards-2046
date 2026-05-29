@@ -60,6 +60,7 @@
   .chart-card.white { background: var(--white); }
   .chart-card h3 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--teal-dark); margin-bottom: 6px; }
   .chart-card p.chart-sub { font-size: 0.78rem; color: var(--text-light); margin-bottom: 20px; font-weight: 400; }
+  .chart-card p.chart-multi { font-size: 0.75rem; color: var(--teal-mid); margin-bottom: 16px; margin-top: -12px; font-style: italic; font-weight: 400; }
   .chart-wrap { position: relative; height: 260px; }
   .chart-wrap.tall { height: 360px; }
 
@@ -315,6 +316,8 @@
       <h3 data-lang="en">Key words: Colombia 2000–2020</h3>
       <p class="chart-sub" data-lang="es">Adjetivos más elegidos para describir el periodo 2000–2020</p>
       <p class="chart-sub" data-lang="en">Most chosen adjectives to describe the 2000–2020 period</p>
+      <p class="chart-sub chart-multi" data-lang="es">Los encuestados pudieron seleccionar más de una opción — los porcentajes indican la proporción de personas que eligió cada alternativa.</p>
+      <p class="chart-sub chart-multi" data-lang="en">Respondents could select more than one option — percentages show the share of people who chose each alternative.</p>
       <div class="hbar-list" id="hbar-pasado"></div>
     </div>
     <div class="chart-card white">
@@ -322,6 +325,8 @@
       <h3 data-lang="en">Key words: Colombia Today</h3>
       <p class="chart-sub" data-lang="es">Adjetivos más elegidos para describir el presente</p>
       <p class="chart-sub" data-lang="en">Most chosen adjectives to describe the present</p>
+      <p class="chart-sub chart-multi" data-lang="es">Los encuestados pudieron seleccionar más de una opción — los porcentajes indican la proporción de personas que eligió cada alternativa.</p>
+      <p class="chart-sub chart-multi" data-lang="en">Respondents could select more than one option — percentages show the share of people who chose each alternative.</p>
       <div class="hbar-list" id="hbar-presente"></div>
     </div>
   </div>
@@ -330,6 +335,8 @@
     <h3 data-lang="en">Desired future: Colombia in 20 years</h3>
     <p class="chart-sub" data-lang="es">Adjetivos que representan la Colombia que los participantes quisieran habitar</p>
     <p class="chart-sub" data-lang="en">Adjectives representing the Colombia participants would like to inhabit</p>
+    <p class="chart-sub chart-multi" data-lang="es">Los encuestados pudieron seleccionar más de una opción — los porcentajes indican la proporción de personas que eligió cada alternativa.</p>
+    <p class="chart-sub chart-multi" data-lang="en">Respondents could select more than one option — percentages show the share of people who chose each alternative.</p>
     <div class="chart-wrap" style="height:200px;"><canvas id="chartFuturo"></canvas></div>
   </div>
   <div style="margin-top:32px;">
@@ -399,6 +406,8 @@
       <h3 data-lang="en">Main identified risks</h3>
       <p class="chart-sub" data-lang="es">Número de veces que cada riesgo fue seleccionado (respuesta múltiple)</p>
       <p class="chart-sub" data-lang="en">Number of times each risk was selected (multiple response)</p>
+      <p class="chart-sub chart-multi" data-lang="es">Los encuestados pudieron seleccionar más de una opción — los porcentajes indican la proporción de personas que eligió cada alternativa.</p>
+      <p class="chart-sub chart-multi" data-lang="en">Respondents could select more than one option — percentages show the share of people who chose each alternative.</p>
       <div class="hbar-list" id="hbar-riesgos"></div>
     </div>
   </div>
@@ -408,6 +417,8 @@
       <h3 data-lang="en">What is needed to mitigate threats?</h3>
       <p class="chart-sub" data-lang="es">Respuesta múltiple — número de selecciones por opción</p>
       <p class="chart-sub" data-lang="en">Multiple response — number of selections per option</p>
+      <p class="chart-sub chart-multi" data-lang="es">Los encuestados pudieron seleccionar más de una opción — los porcentajes indican la proporción de personas que eligió cada alternativa.</p>
+      <p class="chart-sub chart-multi" data-lang="en">Respondents could select more than one option — percentages show the share of people who chose each alternative.</p>
       <div class="chart-wrap" style="height:300px;"><canvas id="chartMitigacion"></canvas></div>
     </div>
   </div>
@@ -512,6 +523,8 @@
       <h3 data-lang="en">Desired Colombia in 2046</h3>
       <p class="chart-sub" data-lang="es">Características más seleccionadas (respuesta múltiple)</p>
       <p class="chart-sub" data-lang="en">Most selected characteristics (multiple response)</p>
+      <p class="chart-sub chart-multi" data-lang="es">Los encuestados pudieron seleccionar más de una opción — los porcentajes indican la proporción de personas que eligió cada alternativa.</p>
+      <p class="chart-sub chart-multi" data-lang="en">Respondents could select more than one option — percentages show the share of people who chose each alternative.</p>
       <div class="chart-wrap" style="height:300px;"><canvas id="chartCar2046"></canvas></div>
     </div>
   </div>
@@ -536,6 +549,8 @@
       <h3 data-lang="en">Anticipated labor changes</h3>
       <p class="chart-sub" data-lang="es">Selección múltiple — número de menciones</p>
       <p class="chart-sub" data-lang="en">Multiple selection — number of mentions</p>
+      <p class="chart-sub chart-multi" data-lang="es">Los encuestados pudieron seleccionar más de una opción — los porcentajes indican la proporción de personas que eligió cada alternativa.</p>
+      <p class="chart-sub chart-multi" data-lang="en">Respondents could select more than one option — percentages show the share of people who chose each alternative.</p>
       <div class="chart-wrap tall"><canvas id="chartLaboral"></canvas></div>
     </div>
     <div>
@@ -800,6 +815,36 @@ function ttWithPctH(total) {
   };
 }
 
+// Multi-response: show count + % of total (horizontal)
+function ttMultiH(total) {
+  return {
+    backgroundColor: C.tealDark,
+    titleColor: C.tealLight,
+    bodyColor: C.white,
+    callbacks: {
+      label: function(ctx) {
+        const val = ctx.parsed.x;
+        const pct = Math.round(val / total * 100);
+        return ` ${val} (${pct}%)`;
+      }
+    }
+  };
+}
+// Multi-response: show count + % of total (vertical)
+function ttMultiV(total) {
+  return {
+    backgroundColor: C.tealDark,
+    titleColor: C.tealLight,
+    bodyColor: C.white,
+    callbacks: {
+      label: function(ctx) {
+        const val = ctx.parsed.y;
+        const pct = Math.round(val / total * 100);
+        return ` ${val} (${pct}%)`;
+      }
+    }
+  };
+}
 // For doughnut/pie (ctx.parsed is the value directly)
 function ttWithPctPie(total) {
   return {
@@ -823,14 +868,15 @@ function destroyAll() {
   charts = {};
 }
 
-function makeHBars(containerId, items, maxVal) {
+function makeHBars(containerId, items, maxVal, total) {
   const c = document.getElementById(containerId);
   if (!c) return;
   c.innerHTML = '';
   items.forEach(([label, val]) => {
     const pct = Math.round(val / maxVal * 100);
+    const pctOfTotal = total ? ` (${Math.round(val / total * 100)}%)` : '';
     c.innerHTML += `<div class="hbar-item">
-      <div class="hbar-label"><span>${label}</span><span class="val">${val}</span></div>
+      <div class="hbar-label"><span>${label}</span><span class="val">${val}${pctOfTotal}</span></div>
       <div class="hbar-track"><div class="hbar-fill" style="width:${pct}%"></div></div>
     </div>`;
   });
@@ -909,24 +955,24 @@ function buildCharts(lang) {
   });
 
   // HBars pasado/presente
-  makeHBars('hbar-pasado', t.pasadoData, t.pasadoData[0][1]);
-  makeHBars('hbar-presente', t.presenteData, t.presenteData[0][1]);
+  makeHBars('hbar-pasado', t.pasadoData, t.pasadoData[0][1], N_TOTAL);
+  makeHBars('hbar-presente', t.presenteData, t.presenteData[0][1], N_TOTAL);
 
-  // 6. Futuro adjetivos
+  // 6. Futuro adjetivos (multi-response)
   charts.futuro = new Chart(document.getElementById('chartFuturo'), {
     type:'bar',
     data:{ labels:t.futuroLabels, datasets:[{ data:[268,185,176,167,157,66,40,31], backgroundColor:PAL, borderRadius:6 }] },
-    options:{ ...baseOpts, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false}} } }
+    options:{ ...baseOpts, plugins:{ legend:{display:false}, tooltip:ttMultiV(N_TOTAL) }, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false}} } }
   });
 
   // HBars riesgos
-  makeHBars('hbar-riesgos', t.riesgosData, t.riesgosData[0][1]);
+  makeHBars('hbar-riesgos', t.riesgosData, t.riesgosData[0][1], N_TOTAL);
 
   // 7. Mitigación
   charts.mitigacion = new Chart(document.getElementById('chartMitigacion'), {
     type:'bar',
     data:{ labels:t.mitigacionLabels, datasets:[{ data:[193,181,166,160,62,49,37,9], backgroundColor:PAL[0], borderRadius:4 }] },
-    options:{ ...baseOpts, indexAxis:'y', scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false}, ticks:{font:{size:10}}} } }
+    options:{ ...baseOpts, indexAxis:'y', plugins:{ legend:{display:false}, tooltip:ttMultiH(N_TOTAL) }, scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false}, ticks:{font:{size:10}}} } }
   });
 
   // 8. Instituciones
@@ -966,14 +1012,14 @@ function buildCharts(lang) {
   charts.car2046 = new Chart(document.getElementById('chartCar2046'), {
     type:'bar',
     data:{ labels:t.car2046Labels, datasets:[{ data:[264,242,226,200,149,96,67], backgroundColor:PAL, borderRadius:6 }] },
-    options:{ ...baseOpts, indexAxis:'y', scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false},ticks:{font:{size:10}}} } }
+    options:{ ...baseOpts, indexAxis:'y', plugins:{ legend:{display:false}, tooltip:ttMultiH(N_TOTAL) }, scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false},ticks:{font:{size:10}}} } }
   });
 
-  // 14. Laboral
+  // 14. Laboral (multi-response, vertical)
   charts.laboral = new Chart(document.getElementById('chartLaboral'), {
     type:'bar',
     data:{ labels:t.laboralLabels, datasets:[{ data:[118,110,107,82,45,39,28], backgroundColor:PAL, borderRadius:6 }] },
-    options:{ ...baseOpts, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false},ticks:{font:{size:9}}} } }
+    options:{ ...baseOpts, plugins:{ legend:{display:false}, tooltip:ttMultiV(N_TOTAL) }, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false},ticks:{font:{size:9}}} } }
   });
 
   // 15. Conflicto (single response)
