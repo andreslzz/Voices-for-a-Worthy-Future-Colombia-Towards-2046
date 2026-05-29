@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe Estadístico — Colombia 2046</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --teal-dark: #2C4F55;
+    --teal-mid: #3D6B72;
+    --teal-light: #5BC8D5;
+    --teal-pale: #8DDEE6;
+    --cream: #F0EDE8;
+    --cream-dark: #E4DDD4;
+    --text-dark: #2A2A2A;
+    --text-mid: #4A4A4A;
+    --text-light: #7A7A7A;
+    --white: #FFFFFF;
+    --accent-gold: #C9A96E;
+    --accent-coral: #D4756A;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text-dark); line-height: 1.6; }
+
+  /* LANG BAR */
+  .lang-bar { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--cream-dark); display: flex; justify-content: flex-end; align-items: center; padding: 10px 48px; gap: 8px; }
+  .lang-bar > span { font-size: 12px; color: var(--text-light); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .lang-btn { background: none; border: 2px solid transparent; padding: 6px 18px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; color: var(--text-mid); }
+  .lang-btn.active { background: var(--teal-dark); color: var(--white); border-color: var(--teal-dark); }
+  .lang-btn:not(.active):hover { border-color: var(--teal-light); color: var(--teal-dark); }
+
+  /* HERO */
+  .hero { background: linear-gradient(105deg, var(--teal-dark) 0%, var(--teal-mid) 45%, rgba(44,79,85,0.6) 75%, transparent 100%), url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80') center/cover no-repeat; min-height: 420px; display: flex; align-items: center; padding: 60px 80px; }
+  .hero-content { max-width: 700px; }
+  .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal-pale); margin-bottom: 20px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 24px; }
+  .hero p { font-size: 1rem; color: rgba(255,255,255,0.85); font-weight: 300; max-width: 540px; line-height: 1.8; margin-bottom: 32px; }
+  .hero-stats { display: flex; gap: 40px; }
+  .hero-stat .num { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 700; color: var(--teal-light); display: block; line-height: 1; }
+  .hero-stat .lbl { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* LAYOUT */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+  section { padding: 64px 0; }
+  section:nth-child(even) { background: var(--white); }
+  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 48px; }
+  .section-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--cream-dark); line-height: 1; flex-shrink: 0; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--teal-dark); line-height: 1.2; }
+  .section-sub { font-size: 0.875rem; color: var(--text-light); margin-top: 4px; font-weight: 400; }
+
+  /* GRIDS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .grid-12 { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; align-items: start; }
+
+  /* CHART CARDS */
+  .chart-card { background: var(--cream); border-radius: 16px; padding: 28px; border: 1px solid var(--cream-dark); }
+  .chart-card.white { background: var(--white); }
+  .chart-card h3 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--teal-dark); margin-bottom: 6px; }
+  .chart-card p.chart-sub { font-size: 0.78rem; color: var(--text-light); margin-bottom: 20px; font-weight: 400; }
+  .chart-wrap { position: relative; height: 260px; }
+  .chart-wrap.tall { height: 360px; }
+
+  /* INSIGHTS */
+  .insights { background: var(--teal-dark); border-radius: 20px; padding: 36px; color: var(--white); }
+  .insights h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--teal-light); margin-bottom: 20px; }
+  .insight-item { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+  .insight-icon { width: 32px; height: 32px; background: rgba(91,200,213,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .insight-text { font-size: 0.9rem; color: rgba(255,255,255,0.87); line-height: 1.65; }
+  .insight-text strong { color: var(--teal-light); }
+
+  /* HBARS */
+  .hbar-list { display: flex; flex-direction: column; gap: 12px; }
+  .hbar-label { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+  .hbar-label .val { font-weight: 700; color: var(--teal-dark); }
+  .hbar-track { height: 10px; background: var(--cream-dark); border-radius: 99px; overflow: hidden; }
+  .hbar-fill { height: 100%; background: linear-gradient(90deg, var(--teal-dark), var(--teal-light)); border-radius: 99px; }
+
+  /* INST GRID */
+  .inst-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .inst-item { background: var(--cream); border-radius: 12px; padding: 16px; border-left: 4px solid var(--teal-light); }
+  .inst-name { font-size: 0.82rem; color: var(--text-mid); font-weight: 500; margin-bottom: 8px; }
+  .inst-score-row { display: flex; align-items: center; gap: 10px; }
+  .inst-score { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--teal-dark); min-width: 44px; }
+  .inst-dots { display: flex; gap: 4px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--cream-dark); }
+  .dot.filled { background: var(--teal-light); }
+  .dot.half { background: linear-gradient(90deg, var(--teal-light) 50%, var(--cream-dark) 50%); }
+
+  /* FEELINGS */
+  .feelings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+  .feeling-card { background: var(--cream); border-radius: 14px; padding: 20px; text-align: center; border: 1px solid var(--cream-dark); }
+  .feeling-emoji { font-size: 2rem; margin-bottom: 8px; }
+  .feeling-name { font-weight: 600; font-size: 0.9rem; color: var(--teal-dark); }
+  .feeling-count { font-size: 0.78rem; color: var(--text-light); margin-top: 2px; }
+
+  /* QUOTE CHIPS */
+  .quote-list { display: flex; flex-direction: column; gap: 10px; }
+  .quote-chip { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 10px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+  .quote-chip .qtext { color: var(--text-dark); flex: 1; }
+  .quote-chip .qnum { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--teal-light); margin-left: 12px; flex-shrink: 0; }
+
+  /* CONCLUSIONS */
+  .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .conclusion-card { background: var(--white); border-radius: 18px; padding: 28px; border-top: 4px solid var(--teal-light); }
+  .conclusion-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: var(--cream-dark); margin-bottom: 8px; }
+  .conclusion-title { font-weight: 700; font-size: 1rem; color: var(--teal-dark); margin-bottom: 10px; }
+  .conclusion-text { font-size: 0.87rem; color: var(--text-mid); line-height: 1.7; }
+
+  /* CARACT CARDS */
+  .caract-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 0; }
+  .caract-card { background: var(--white); border-radius: 16px; padding: 24px 20px; text-align: center; border: 1px solid var(--cream-dark); border-top: 4px solid var(--teal-light); }
+  .caract-icon { font-size: 2rem; margin-bottom: 10px; }
+  .caract-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: var(--teal-dark); line-height: 1; }
+  .caract-label { font-size: 0.85rem; color: var(--text-mid); font-weight: 500; margin-top: 6px; line-height: 1.4; }
+  .caract-pct { font-size: 0.78rem; color: var(--teal-light); font-weight: 700; margin-top: 4px; }
+
+  footer { background: var(--teal-dark); color: rgba(255,255,255,0.6); text-align: center; padding: 32px 40px; font-size: 0.82rem; }
+  footer strong { color: var(--teal-light); }
+
+  /* LANG VISIBILITY — default ES */
+  [data-lang="en"] { display: none !important; }
+  body.en [data-lang="es"] { display: none !important; }
+  body.en [data-lang="en"] { display: block !important; }
+  /* inline spans */
+  span[data-lang="en"] { display: none !important; }
+  body.en span[data-lang="es"] { display: none !important; }
+  body.en span[data-lang="en"] { display: inline !important; }
+  /* flex containers */
+  body.en .hero-stats[data-lang="en"] { display: flex !important; }
+  body.en div[data-lang="en"] { display: block !important; }
+
+  @media (max-width: 900px) {
+    .grid-2, .grid-3, .grid-12, .inst-grid, .conclusion-grid { grid-template-columns: 1fr; }
+    .hero { padding: 48px 24px; }
+    .container { padding: 0 20px; }
+    .lang-bar { padding: 10px 20px; }
+    section { padding: 48px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <span><span data-lang="es">Idioma</span><span data-lang="en">Language</span></span>
+  <button class="lang-btn active" id="btn-es" onclick="setLang('es')">Español</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow" data-lang="es">Social Research Center · Encuesta Colombia 2046</div>
+    <div class="hero-eyebrow" data-lang="en">Social Research Center · Survey Colombia 2046</div>
+    <h1 data-lang="es">Voces para un Futuro Digno:<br>Colombia hacia 2046</h1>
+    <h1 data-lang="en">Voices for a Worthy Future:<br>Colombia Towards 2046</h1>
+    <p data-lang="es">Informe estadístico de los resultados de la encuesta sobre percepciones, expectativas e imaginarios colectivos del futuro de Colombia. Análisis de 299 respuestas de ciudadanos de todo el país.</p>
+    <p data-lang="en">Statistical report on survey results about perceptions, expectations, and collective imaginaries of Colombia's future. Analysis of 299 responses from citizens across the country.</p>
+    <div class="hero-stats" data-lang="es">
+      <div class="hero-stat"><span class="num">299</span><span class="lbl">Respuestas</span></div>
+      <div class="hero-stat"><span class="num">36</span><span class="lbl">Preguntas</span></div>
+      <div class="hero-stat"><span class="num">2046</span><span class="lbl">Horizonte</span></div>
+    </div>
+    <div class="hero-stats" data-lang="en">
+      <div class="hero-stat"><span class="num">299</span><span class="lbl">Responses</span></div>
+      <div class="hero-stat"><span class="num">36</span><span class="lbl">Questions</span></div>
+      <div class="hero-stat"><span class="num">2046</span><span class="lbl">Horizon</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 01 DEMOGRAPHIC ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-title" data-lang="es">Perfil demográfico</div>
+      <div class="section-title" data-lang="en">Demographic Profile</div>
+      <div class="section-sub" data-lang="es">Género, edad, región, ciudad, conflicto y caracterización especial de los participantes</div>
+      <div class="section-sub" data-lang="en">Gender, age, region, city, conflict zone and special characterization of participants</div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="chart-card">
+      <h3 data-lang="es">Distribución por género</h3>
+      <h3 data-lang="en">Gender distribution</h3>
+      <p class="chart-sub" data-lang="es">n = 299 participantes</p>
+      <p class="chart-sub" data-lang="en">n = 299 participants</p>
+      <div class="chart-wrap"><canvas id="chartGenero"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3 data-lang="es">Grupos de edad</h3>
+      <h3 data-lang="en">Age groups</h3>
+      <p class="chart-sub" data-lang="es">Distribución generacional</p>
+      <p class="chart-sub" data-lang="en">Generational distribution</p>
+      <div class="chart-wrap"><canvas id="chartEdad"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3 data-lang="es">Situación económica del hogar</h3>
+      <h3 data-lang="en">Household economic situation</h3>
+      <p class="chart-sub" data-lang="es">Nivel de ingreso autorreportado</p>
+      <p class="chart-sub" data-lang="en">Self-reported income level</p>
+      <div class="chart-wrap"><canvas id="chartHogar"></canvas></div>
+    </div>
+  </div>
+  <div style="margin-top:32px;" class="grid-2">
+    <div class="chart-card">
+      <h3 data-lang="es">Macro región de residencia</h3>
+      <h3 data-lang="en">Macro region of residence</h3>
+      <p class="chart-sub" data-lang="es">Distribución geográfica de los participantes</p>
+      <p class="chart-sub" data-lang="en">Geographic distribution of participants</p>
+      <div class="chart-wrap"><canvas id="chartRegion"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3 data-lang="es">Grupo profesional</h3>
+      <h3 data-lang="en">Professional group</h3>
+      <p class="chart-sub" data-lang="es">Sector laboral de los participantes</p>
+      <p class="chart-sub" data-lang="en">Participants' labor sector</p>
+      <div class="chart-wrap tall"><canvas id="chartProfesional"></canvas></div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;" class="grid-2">
+    <div class="chart-card">
+      <h3 data-lang="es">Ciudad de residencia</h3>
+      <h3 data-lang="en">City of residence</h3>
+      <p class="chart-sub" data-lang="es">Ciudades más mencionadas (respuesta abierta normalizada)</p>
+      <p class="chart-sub" data-lang="en">Most mentioned cities (normalized open response)</p>
+      <div class="chart-wrap tall"><canvas id="chartCiudad"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3 data-lang="es">Zona de conflicto percibido</h3>
+      <h3 data-lang="en">Perceived conflict zone</h3>
+      <p class="chart-sub" data-lang="es">¿Es tu territorio afectado por conflicto armado?</p>
+      <p class="chart-sub" data-lang="en">Is your territory affected by armed conflict?</p>
+      <div class="chart-wrap tall"><canvas id="chartConflicto"></canvas></div>
+    </div>
+  </div>
+
+  <!-- CARACTERIZACIÓN ESPECIAL -->
+  <div style="margin-top:48px;">
+    <div style="margin-bottom:24px;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--teal-dark);" data-lang="es">Caracterización especial</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--teal-dark);" data-lang="en">Special Characterization</div>
+      <div style="font-size:0.875rem;color:var(--text-light);margin-top:4px;" data-lang="es">Identidades y roles adicionales que los participantes seleccionaron</div>
+      <div style="font-size:0.875rem;color:var(--text-light);margin-top:4px;" data-lang="en">Additional identities and roles selected by participants</div>
+    </div>
+    <div class="caract-grid">
+      <div class="caract-card">
+        <div class="caract-icon">🚀</div>
+        <div class="caract-num">83</div>
+        <div class="caract-label" data-lang="es">Emprendedor/a</div>
+        <div class="caract-label" data-lang="en">Entrepreneur</div>
+        <div class="caract-pct">27.8% <span data-lang="es">del total</span><span data-lang="en">of total</span></div>
+      </div>
+      <div class="caract-card">
+        <div class="caract-icon">🤝</div>
+        <div class="caract-num">28</div>
+        <div class="caract-label" data-lang="es">Voluntario/a en organización social</div>
+        <div class="caract-label" data-lang="en">Volunteer in social organization</div>
+        <div class="caract-pct">9.4% <span data-lang="es">del total</span><span data-lang="en">of total</span></div>
+      </div>
+      <div class="caract-card">
+        <div class="caract-icon">🕊️</div>
+        <div class="caract-num">24</div>
+        <div class="caract-label" data-lang="es">Víctima del conflicto</div>
+        <div class="caract-label" data-lang="en">Conflict victim</div>
+        <div class="caract-pct">8.0% <span data-lang="es">del total</span><span data-lang="en">of total</span></div>
+      </div>
+      <div class="caract-card">
+        <div class="caract-icon">🌍</div>
+        <div class="caract-num">9</div>
+        <div class="caract-label" data-lang="es">Afrocolombiano/a</div>
+        <div class="caract-label" data-lang="en">Afro-Colombian</div>
+        <div class="caract-pct">3.0% <span data-lang="es">del total</span><span data-lang="en">of total</span></div>
+      </div>
+      <div class="caract-card">
+        <div class="caract-icon">🧳</div>
+        <div class="caract-num">12</div>
+        <div class="caract-label" data-lang="es">Migrante venezolano/a</div>
+        <div class="caract-label" data-lang="en">Venezuelan migrant</div>
+        <div class="caract-pct">4.0% <span data-lang="es">del total</span><span data-lang="en">of total</span></div>
+      </div>
+      <div class="caract-card">
+        <div class="caract-icon" style="font-size:1.6rem;">🌿</div>
+        <div class="caract-num">2</div>
+        <div class="caract-label" data-lang="es">Indígena</div>
+        <div class="caract-label" data-lang="en">Indigenous</div>
+        <div class="caract-pct">0.7% <span data-lang="es">del total</span><span data-lang="en">of total</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ 02 TIME PERCEPTIONS ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-title" data-lang="es">Percepciones del tiempo: pasado, presente y futuro</div>
+      <div class="section-title" data-lang="en">Perceptions of Time: Past, Present & Future</div>
+      <div class="section-sub" data-lang="es">¿Cómo ven los colombianos el ayer, el hoy y el mañana?</div>
+      <div class="section-sub" data-lang="en">How do Colombians see yesterday, today, and tomorrow?</div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:32px;">
+    <div class="chart-card white">
+      <h3 data-lang="es">Palabras clave: Colombia 2000–2020</h3>
+      <h3 data-lang="en">Key words: Colombia 2000–2020</h3>
+      <p class="chart-sub" data-lang="es">Adjetivos más elegidos para describir el periodo 2000–2020</p>
+      <p class="chart-sub" data-lang="en">Most chosen adjectives to describe the 2000–2020 period</p>
+      <div class="hbar-list" id="hbar-pasado"></div>
+    </div>
+    <div class="chart-card white">
+      <h3 data-lang="es">Palabras clave: Colombia hoy</h3>
+      <h3 data-lang="en">Key words: Colombia Today</h3>
+      <p class="chart-sub" data-lang="es">Adjetivos más elegidos para describir el presente</p>
+      <p class="chart-sub" data-lang="en">Most chosen adjectives to describe the present</p>
+      <div class="hbar-list" id="hbar-presente"></div>
+    </div>
+  </div>
+  <div class="chart-card white">
+    <h3 data-lang="es">Futuro deseado: Colombia en 20 años</h3>
+    <h3 data-lang="en">Desired future: Colombia in 20 years</h3>
+    <p class="chart-sub" data-lang="es">Adjetivos que representan la Colombia que los participantes quisieran habitar</p>
+    <p class="chart-sub" data-lang="en">Adjectives representing the Colombia participants would like to inhabit</p>
+    <div class="chart-wrap" style="height:200px;"><canvas id="chartFuturo"></canvas></div>
+  </div>
+  <div style="margin-top:32px;">
+    <div class="insights">
+      <h3 data-lang="es">💡 Hallazgos clave</h3>
+      <h3 data-lang="en">💡 Key Findings</h3>
+      <div class="insight-item">
+        <div class="insight-icon">📉</div>
+        <div class="insight-text" data-lang="es">El <strong>presente</strong> es percibido como más incierto e inestable que el pasado. Los adjetivos líderes para el presente son "Incierta" (178) e "Inestable" (176) — casi empatados — frente al pasado, donde dominó "Compleja" (142) con mayor distancia. El deterioro subjetivo es claro.</div>
+        <div class="insight-text" data-lang="en">The <strong>present</strong> is perceived as more uncertain and unstable than the past. The leading adjectives for the present are "Uncertain" (178) and "Unstable" (176) — almost tied — compared to the past, where "Complex" (142) dominated with greater distance. The subjective deterioration is clear.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">🌿</div>
+        <div class="insight-text" data-lang="es">El pasado 2000–2020 se recuerda como <strong>"Compleja pero Dinámica"</strong>: "Dinámica" es el tercer adjetivo más elegido (109), mientras en el presente apenas aparece (60). Hubo más sensación de movimiento y oportunidad, aunque también de inestabilidad.</div>
+        <div class="insight-text" data-lang="en">The 2000–2020 past is remembered as <strong>"Complex but Dynamic"</strong>: "Dynamic" is the third most chosen adjective (109), while in the present it barely appears (60). There was more sense of movement and opportunity, even amid instability.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">🌱</div>
+        <div class="insight-text" data-lang="es">El <strong>futuro deseado</strong> es abrumadoramente "Sostenible" (<strong>89.6%</strong> de las respuestas). Significativamente, "Empática" sube al segundo lugar (185 menciones, 61.9%), superando a "Dinámica" — señal de que la cohesión social y el cuidado mutuo son tan deseados como el crecimiento.</div>
+        <div class="insight-text" data-lang="en">The <strong>desired future</strong> is overwhelmingly "Sustainable" (<strong>89.6%</strong> of responses). Significantly, "Empathetic" rises to second place (185 mentions, 61.9%), surpassing "Dynamic" — a signal that social cohesion and mutual care are as desired as growth.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ 03 RISKS ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div>
+      <div class="section-title" data-lang="es">Riesgos y amenazas percibidas</div>
+      <div class="section-title" data-lang="en">Perceived Risks & Threats</div>
+      <div class="section-sub" data-lang="es">¿Qué amenaza el futuro digno de Colombia y la humanidad?</div>
+      <div class="section-sub" data-lang="en">What threatens a dignified future for Colombia and humanity?</div>
+    </div>
+  </div>
+  <div class="grid-12">
+    <div>
+      <div class="chart-card white">
+        <h3 data-lang="es">Selecciones múltiples</h3>
+        <h3 data-lang="en">Multiple choices</h3>
+        <p class="chart-sub" data-lang="es">Participantes podían elegir varios riesgos</p>
+        <p class="chart-sub" data-lang="en">Participants could choose multiple risks</p>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--teal-dark)">194</div>
+            <div style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;" data-lang="es">mencionaron crisis económica</div>
+            <div style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;" data-lang="en">mentioned economic crisis</div>
+          </div>
+          <div style="text-align:center;padding:20px 0;border-top:1px solid var(--cream-dark)">
+            <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--teal-mid)">175</div>
+            <div style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;" data-lang="es">mencionaron crisis climática</div>
+            <div style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;" data-lang="en">mentioned climate crisis</div>
+          </div>
+          <div style="text-align:center;padding:20px 0;border-top:1px solid var(--cream-dark)">
+            <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--teal-light)">123</div>
+            <div style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;" data-lang="es">temen retroceso de paz</div>
+            <div style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;" data-lang="en">fear peace setbacks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-card white">
+      <h3 data-lang="es">Principales riesgos identificados</h3>
+      <h3 data-lang="en">Main identified risks</h3>
+      <p class="chart-sub" data-lang="es">Número de veces que cada riesgo fue seleccionado (respuesta múltiple)</p>
+      <p class="chart-sub" data-lang="en">Number of times each risk was selected (multiple response)</p>
+      <div class="hbar-list" id="hbar-riesgos"></div>
+    </div>
+  </div>
+  <div style="margin-top:32px;">
+    <div class="chart-card white">
+      <h3 data-lang="es">¿Qué se necesita para mitigar las amenazas?</h3>
+      <h3 data-lang="en">What is needed to mitigate threats?</h3>
+      <p class="chart-sub" data-lang="es">Respuesta múltiple — número de selecciones por opción</p>
+      <p class="chart-sub" data-lang="en">Multiple response — number of selections per option</p>
+      <div class="chart-wrap" style="height:300px;"><canvas id="chartMitigacion"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ 04 INSTITUTIONS ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div>
+      <div class="section-title" data-lang="es">Confianza en las instituciones</div>
+      <div class="section-title" data-lang="en">Trust in Institutions</div>
+      <div class="section-sub" data-lang="es">Calificación promedio del 1 al 5 sobre su capacidad para llevar a Colombia a un futuro digno</div>
+      <div class="section-sub" data-lang="en">Average rating from 1 to 5 on their capacity to lead Colombia to a dignified future</div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="chart-card white">
+      <h3 data-lang="es">Promedio de calificación por institución</h3>
+      <h3 data-lang="en">Average rating by institution</h3>
+      <p class="chart-sub" data-lang="es">Escala 1–5 (mayor valor = mayor confianza)</p>
+      <p class="chart-sub" data-lang="en">Scale 1–5 (higher value = greater trust)</p>
+      <div class="chart-wrap tall"><canvas id="chartInstituciones"></canvas></div>
+    </div>
+    <div>
+      <div class="inst-grid" id="inst-grid"></div>
+    </div>
+  </div>
+  <div style="margin-top:32px;">
+    <div class="insights">
+      <h3 data-lang="es">💡 Hallazgos clave</h3>
+      <h3 data-lang="en">💡 Key Findings</h3>
+      <div class="insight-item">
+        <div class="insight-icon">🎓</div>
+        <div class="insight-text" data-lang="es">La <strong>Academia/Ciencia</strong> (3.77/5) y el <strong>Sistema educativo</strong> (3.77/5) empatan en el primer lugar de confianza — la única institución que compite con la academia es ella misma. Con 299 respuestas, este patrón se confirma con mayor solidez estadística que en la ronda anterior.</div>
+        <div class="insight-text" data-lang="en">The <strong>Academia/Science</strong> (3.77/5) and the <strong>Education system</strong> (3.77/5) tie for first in trust — the only institution that competes with academia is academia itself. With 299 responses, this pattern is confirmed with greater statistical solidity than in the previous round.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">🏛️</div>
+        <div class="insight-text" data-lang="es">El <strong>Parlamento</strong> obtiene la calificación más baja (2.33/5), seguido del <strong>Sistema judicial</strong> (2.43/5). Existe una brecha de más de <strong>1.4 puntos</strong> entre las instituciones más y menos confiables — una fractura que se mantiene estable entre ambas rondas de recolección.</div>
+        <div class="insight-text" data-lang="en">The <strong>Parliament</strong> receives the lowest rating (2.33/5), followed by the <strong>Judicial system</strong> (2.43/5). There is a gap of more than <strong>1.4 points</strong> between the most and least trusted institutions — a fracture that remains stable across both rounds of data collection.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">💻</div>
+        <div class="insight-text" data-lang="es">Las <strong>Industrias creativas</strong> (3.61/5) superan al <strong>Sector TI</strong> (3.60/5) por primera vez, consolidándose como el tercer bloque de mayor confianza junto con las organizaciones comunitarias (3.38). La economía del conocimiento y la cultura emerge como un pilar de legitimidad social.</div>
+        <div class="insight-text" data-lang="en">The <strong>Creative industries</strong> (3.61/5) edge out the <strong>IT sector</strong> (3.60/5) for the first time, solidifying as the third most-trusted block alongside community organizations (3.38). The knowledge and culture economy is emerging as a pillar of social legitimacy.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ 05 FUTURE ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div>
+      <div class="section-title" data-lang="es">Futuro personal y colectivo</div>
+      <div class="section-title" data-lang="en">Personal and Collective Future</div>
+      <div class="section-sub" data-lang="es">Proyección de vida, territorio de esperanza y corriente política esperada</div>
+      <div class="section-sub" data-lang="en">Life projection, territory of hope and expected political current</div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="chart-card white">
+      <h3 data-lang="es">¿Dónde imaginas tu vida en 20 años?</h3>
+      <h3 data-lang="en">Where do you imagine your life in 20 years?</h3>
+      <p class="chart-sub" data-lang="es">Proyección personal de futuro</p>
+      <p class="chart-sub" data-lang="en">Personal future projection</p>
+      <div class="chart-wrap tall"><canvas id="chartVida20"></canvas></div>
+    </div>
+    <div class="chart-card white">
+      <h3 data-lang="es">¿Dónde se concentra la esperanza de cambio?</h3>
+      <h3 data-lang="en">Where is hope for change concentrated?</h3>
+      <p class="chart-sub" data-lang="es">Territorio con mayor potencial transformador</p>
+      <p class="chart-sub" data-lang="en">Territory with greatest transformative potential</p>
+      <div class="chart-wrap tall"><canvas id="chartTerritorio"></canvas></div>
+    </div>
+    <div class="chart-card white">
+      <h3 data-lang="es">¿Qué corriente política predominará en 2046?</h3>
+      <h3 data-lang="en">Which political current will prevail in 2046?</h3>
+      <p class="chart-sub" data-lang="es">Proyección de escenario político futuro</p>
+      <p class="chart-sub" data-lang="en">Projection of future political scenario</p>
+      <div class="chart-wrap tall"><canvas id="chartPolitica"></canvas></div>
+    </div>
+  </div>
+  <div style="margin-top:32px;">
+    <div class="chart-card white">
+      <h3 data-lang="es">¿Qué sientes cuando piensas en el futuro de Colombia?</h3>
+      <h3 data-lang="en">What do you feel when you think about Colombia's future?</h3>
+      <p class="chart-sub" data-lang="es">Emoción predominante (respuestas abiertas agrupadas)</p>
+      <p class="chart-sub" data-lang="en">Predominant emotion (grouped open responses)</p>
+      <div class="feelings-grid" id="feelings-grid"></div>
+    </div>
+  </div>
+  <div style="margin-top:32px;">
+    <div class="chart-card white">
+      <h3 data-lang="es">Colombia deseada en 2046</h3>
+      <h3 data-lang="en">Desired Colombia in 2046</h3>
+      <p class="chart-sub" data-lang="es">Características más seleccionadas (respuesta múltiple)</p>
+      <p class="chart-sub" data-lang="en">Most selected characteristics (multiple response)</p>
+      <div class="chart-wrap" style="height:300px;"><canvas id="chartCar2046"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ 06 WORK ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div>
+      <div class="section-title" data-lang="es">El futuro del trabajo</div>
+      <div class="section-title" data-lang="en">The Future of Work</div>
+      <div class="section-sub" data-lang="es">¿Qué habrá cambiado en la jornada laboral para 2046?</div>
+      <div class="section-sub" data-lang="en">What will have changed in the workday by 2046?</div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="chart-card white">
+      <h3 data-lang="es">Cambios laborales anticipados</h3>
+      <h3 data-lang="en">Anticipated labor changes</h3>
+      <p class="chart-sub" data-lang="es">Selección múltiple — número de menciones</p>
+      <p class="chart-sub" data-lang="en">Multiple selection — number of mentions</p>
+      <div class="chart-wrap tall"><canvas id="chartLaboral"></canvas></div>
+    </div>
+    <div>
+      <div class="insights">
+        <h3 data-lang="es">💡 Hallazgos clave</h3>
+        <h3 data-lang="en">💡 Key Findings</h3>
+        <div class="insight-item">
+          <div class="insight-icon">🤖</div>
+          <div class="insight-text" data-lang="es">Las tres opciones líderes están casi empatadas — tecnología asume lo rutinario (118), trabajo más colectivo (110) y mismo trabajo bajo supervisión de IA (107) — lo que revela una <strong>visión del futuro laboral profundamente dividida</strong>: entre optimismo tecnológico, humanismo comunitario y continuidad adaptada.</div>
+          <div class="insight-text" data-lang="en">The three leading options are nearly tied — technology takes over routine work (118), more collective work (110), and same work under AI supervision (107) — revealing a <strong>deeply divided vision of the labor future</strong>: between technological optimism, community humanism, and adapted continuity.</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-icon">🌐</div>
+          <div class="insight-text" data-lang="es"><strong>82 participantes</strong> prevén trabajo 100% online, pero <strong>39</strong> creen que todo seguirá igual con más burocracia. Esto muestra que casi el mismo número que confía en la transformación digital teme que el sistema simplemente se vuelva más pesado sin cambiar de fondo.</div>
+          <div class="insight-text" data-lang="en"><strong>82 participants</strong> foresee 100% online work, but <strong>39</strong> believe everything will remain the same with more paperwork. This shows that nearly as many people who trust digital transformation fear the system will simply become heavier without changing fundamentally.</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-icon">🌿</div>
+          <div class="insight-text" data-lang="es"><strong>45 participantes</strong> vinculan su futuro laboral directamente a la <strong>restauración de ecosistemas</strong> — casi el doble que en la primera ronda. Este crecimiento refleja una conciencia ambiental que ya no es marginal sino una corriente laboral emergente.</div>
+          <div class="insight-text" data-lang="en"><strong>45 participants</strong> link their professional future directly to <strong>ecosystem restoration</strong> — nearly double the first round. This growth reflects an environmental consciousness that is no longer marginal but an emerging labor current.</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-icon">⚠️</div>
+          <div class="insight-text" data-lang="es"><strong>28 participantes</strong> creen que su grupo profesional <strong>desaparecerá o dejará de ser necesario</strong> para 2046. Aunque es la opción menos elegida, el dato es significativo: representa una angustia laboral real ante la aceleración tecnológica.</div>
+          <div class="insight-text" data-lang="en"><strong>28 participants</strong> believe their professional group <strong>will disappear or become unnecessary</strong> by 2046. Although it is the least chosen option, the figure is significant: it represents a real labor anxiety in the face of technological acceleration.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ 07 OPEN VOICE ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <div>
+      <div class="section-title" data-lang="es">Voz abierta: recursos y peligros</div>
+      <div class="section-title" data-lang="en">Open Voice: Resources & Dangers</div>
+      <div class="section-sub" data-lang="es">Las palabras más frecuentes en las respuestas abiertas de los participantes</div>
+      <div class="section-sub" data-lang="en">Most frequent words in participants' open-ended responses</div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="chart-card white">
+      <h3 data-lang="es">Principal recurso de Colombia (respuestas agrupadas)</h3>
+      <h3 data-lang="en">Colombia's main resource (grouped responses)</h3>
+      <p class="chart-sub" data-lang="es">Las personas —bajo distintas formas— son el recurso más mencionado</p>
+      <p class="chart-sub" data-lang="en">People — in various forms — are the most mentioned resource</p>
+      <div class="quote-list">
+        <div class="quote-chip"><span class="qtext" data-lang="es">Su gente / Las personas / Recurso humano</span><span class="qtext" data-lang="en">Its people / Human resources / Talent</span><span class="qnum">~45</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">La educación (en todas sus formas)</span><span class="qtext" data-lang="en">Education (in all its forms)</span><span class="qnum">~22</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Biodiversidad / Recursos naturales</span><span class="qtext" data-lang="en">Biodiversity / Natural resources</span><span class="qnum">~20</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Resiliencia / Talento / Creatividad</span><span class="qtext" data-lang="en">Resilience / Creativity / Work ethic</span><span class="qnum">~12</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Cultura / Diversidad</span><span class="qtext" data-lang="en">Culture / Diversity</span><span class="qnum">~8</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Agricultura / El campo</span><span class="qtext" data-lang="en">Agriculture / The countryside</span><span class="qnum">~7</span></div>
+      </div>
+    </div>
+    <div class="chart-card white">
+      <h3 data-lang="es">Mayor peligro para Colombia (respuestas agrupadas)</h3>
+      <h3 data-lang="en">Greatest danger for Colombia (grouped responses)</h3>
+      <p class="chart-sub" data-lang="es">La corrupción domina como el mayor freno al futuro del país</p>
+      <p class="chart-sub" data-lang="en">Corruption dominates as the biggest brake on the country's future</p>
+      <div class="quote-list">
+        <div class="quote-chip"><span class="qtext" data-lang="es">Corrupción (en todas sus formas)</span><span class="qtext" data-lang="en">Corruption (in all its forms)</span><span class="qnum">~30</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Violencia / Guerrilla / Conflicto armado</span><span class="qtext" data-lang="en">Violence / Guerrilla / Armed conflict</span><span class="qnum">~25</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Mal gobierno / Malos gobernantes</span><span class="qtext" data-lang="en">Bad governance / Incompetent leaders</span><span class="qnum">~18</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Polarización política</span><span class="qtext" data-lang="en">Political polarization</span><span class="qnum">~12</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Falta de educación</span><span class="qtext" data-lang="en">Lack of education</span><span class="qnum">~8</span></div>
+        <div class="quote-chip"><span class="qtext" data-lang="es">Desigualdad social y económica</span><span class="qtext" data-lang="en">Social and economic inequality</span><span class="qnum">~6</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ 08 CONCLUSIONS ══ -->
+<section>
+<div class="container">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <div>
+      <div class="section-title" data-lang="es">Hallazgos y conclusiones</div>
+      <div class="section-title" data-lang="en">Findings & Conclusions</div>
+      <div class="section-sub" data-lang="es">Las 9 lecturas más importantes de la encuesta</div>
+      <div class="section-sub" data-lang="en">The 9 most important takeaways from the survey</div>
+    </div>
+  </div>
+  <div class="conclusion-grid">
+    <div class="conclusion-card">
+      <div class="conclusion-num">01</div>
+      <div class="conclusion-title" data-lang="es">Una Colombia con raíces, no en fuga</div>
+      <div class="conclusion-title" data-lang="en">A Colombia with roots, not fleeing</div>
+      <div class="conclusion-text" data-lang="es">El <strong>61.5%</strong> (184/299) proyecta su futuro en Colombia con trabajo estable y casa propia. Solo el <strong>5%</strong> planea emigrar permanentemente. A pesar de la incertidumbre dominante, la apuesta mayoritaria es quedarse y transformar — no escapar.</div>
+      <div class="conclusion-text" data-lang="en"><strong>61.5%</strong> (184/299) project their future in Colombia with stable work and a home. Only <strong>5%</strong> plan to emigrate permanently. Despite the dominant uncertainty, the majority bet is to stay and transform — not to escape.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">02</div>
+      <div class="conclusion-title" data-lang="es">La educación: faro institucional</div>
+      <div class="conclusion-title" data-lang="en">Education: the institutional beacon</div>
+      <div class="conclusion-text" data-lang="es">La academia y el sistema educativo empatan en el primer lugar de confianza (<strong>3.77/5</strong> cada uno). La brecha con el Parlamento (2.33/5) supera los <strong>1.4 puntos</strong> — la más amplia del ranking. Esta fractura entre el saber y el poder político se consolida con cada nueva ronda de datos.</div>
+      <div class="conclusion-text" data-lang="en">Academia and the education system tie for first in trust (<strong>3.77/5</strong> each). The gap with Parliament (2.33/5) exceeds <strong>1.4 points</strong> — the widest in the ranking. This fracture between knowledge and political power solidifies with each new round of data.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">03</div>
+      <div class="conclusion-title" data-lang="es">La corrupción: enemigo público #1</div>
+      <div class="conclusion-title" data-lang="en">Corruption: public enemy #1</div>
+      <div class="conclusion-text" data-lang="es">En las respuestas abiertas, la corrupción aparece directa o implícitamente en más del <strong>60%</strong> de los casos, seguida de la violencia armada y los malos gobiernos. Significativamente, el <strong>8%</strong> de los encuestados se identifica como <strong>víctima del conflicto</strong>, lo que da un peso testimonial directo a estas percepciones.</div>
+      <div class="conclusion-text" data-lang="en">In open-ended responses, corruption appears directly or implicitly in more than <strong>60%</strong> of cases, followed by armed violence and bad governance. Significantly, <strong>8%</strong> of respondents identify as <strong>conflict victims</strong>, giving direct testimonial weight to these perceptions.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">04</div>
+      <div class="conclusion-title" data-lang="es">Incertidumbre como emoción dominante</div>
+      <div class="conclusion-title" data-lang="en">Uncertainty as the dominant emotion</div>
+      <div class="conclusion-text" data-lang="es">La <strong>incertidumbre</strong> lidera con el <strong>28.1%</strong> de las respuestas, casi el doble que la esperanza (16.4%). Sin embargo, la esperanza aparece con fuerza en muchas respuestas abiertas, lo que sugiere una <strong>coexistencia entre el miedo y la fe</strong> que es característica del imaginario colombiano.</div>
+      <div class="conclusion-text" data-lang="en"><strong>Uncertainty</strong> leads with <strong>28.1%</strong> of responses, nearly double hope (16.4%). However, hope appears strongly in many open-ended responses, suggesting a <strong>coexistence between fear and faith</strong> that is characteristic of the Colombian imaginary.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">05</div>
+      <div class="conclusion-title" data-lang="es">La gente como recurso, no el Estado</div>
+      <div class="conclusion-title" data-lang="en">People as the resource, not the State</div>
+      <div class="conclusion-text" data-lang="es">El recurso más mencionado sigue siendo <strong>su gente</strong> — resiliencia, talento y capacidad de trabajo. Notablemente, el <strong>27.8%</strong> se identifica como emprendedor, lo que resuena con esta autopercepción: la transformación del país se concibe desde la iniciativa individual y colectiva, no desde el Estado.</div>
+      <div class="conclusion-text" data-lang="en">The most mentioned resource remains <strong>its people</strong> — resilience, talent, and work ethic. Notably, <strong>27.8%</strong> identify as entrepreneurs, resonating with this self-perception: the country's transformation is conceived from individual and collective initiative, not from the State.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">06</div>
+      <div class="conclusion-title" data-lang="es">Futuro deseado: sostenible y empático</div>
+      <div class="conclusion-title" data-lang="en">Desired future: sustainable and empathetic</div>
+      <div class="conclusion-text" data-lang="es">"Sostenible" (<strong>89.6%</strong>) y "Empática" (<strong>61.9%</strong>) dominan el imaginario futuro. El ascenso de "Empática" al segundo lugar — por encima de "Dinámica" — señala que la gente no solo quiere un país próspero sino uno que <strong>cuide y se reconozca</strong> en sus diferencias.</div>
+      <div class="conclusion-text" data-lang="en">"Sustainable" (<strong>89.6%</strong>) and "Empathetic" (<strong>61.9%</strong>) dominate the future imaginary. The rise of "Empathetic" to second place — above "Dynamic" — signals that people want not just a prosperous country but one that <strong>cares and recognizes itself</strong> in its differences.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">07</div>
+      <div class="conclusion-title" data-lang="es">Crisis climática y económica: riesgos globales</div>
+      <div class="conclusion-title" data-lang="en">Climate & economic crises: global risks</div>
+      <div class="conclusion-text" data-lang="es">La crisis económica (194) y la climática (175) lideran ampliamente. Que el <strong>40.8%</strong> de los encuestados viva en territorio en riesgo o conflicto activo da un contexto concreto al miedo: no se trata solo de amenazas abstractas globales, sino de realidades cotidianas.</div>
+      <div class="conclusion-text" data-lang="en">The economic crisis (194) and the climate crisis (175) lead by a wide margin. The fact that <strong>40.8%</strong> of respondents live in territory at risk or active conflict gives concrete context to the fear: these are not just abstract global threats, but everyday realities.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">08</div>
+      <div class="conclusion-title" data-lang="es">Polarización política marcada</div>
+      <div class="conclusion-title" data-lang="en">Marked political polarization</div>
+      <div class="conclusion-text" data-lang="es">La derecha acumula el <strong>62.9%</strong> combinada frente al 33.1% de la izquierda. Esto contrasta con el ciclo electoral reciente. La proyección al 2046 puede reflejar tanto un deseo de estabilidad económica como desencanto con las políticas actuales — más que una ideología consolidada.</div>
+      <div class="conclusion-text" data-lang="en">The right accumulates <strong>62.9%</strong> combined versus 33.1% for the left. This contrasts with the recent electoral cycle. The 2046 projection may reflect a desire for economic stability as much as disillusionment with current policies — more than a consolidated ideology.</div>
+    </div>
+    <div class="conclusion-card">
+      <div class="conclusion-num">09</div>
+      <div class="conclusion-title" data-lang="es">Tecnología: oportunidad y amenaza</div>
+      <div class="conclusion-title" data-lang="en">Technology: opportunity and threat</div>
+      <div class="conclusion-text" data-lang="es">La IA aparece como riesgo (62 menciones entre los riesgos) y como realidad laboral inminente: las tres opciones laborales más elegidas tienen a la IA como protagonista. Con el Sector TI en <strong>3.60/5</strong> de confianza, la tecnología es temida y valorada a la vez — una tensión que define la transición hacia 2046.</div>
+      <div class="conclusion-text" data-lang="en">AI appears as a risk (62 mentions among threats) and as an imminent labor reality: the three most chosen work scenarios all feature AI as a protagonist. With the IT sector at <strong>3.60/5</strong> trust, technology is both feared and valued — a tension that defines the transition toward 2046.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <p data-lang="es"><strong>Social Research Center</strong> · Informe Encuesta Colombia 2046 · 299 participantes · 2026</p>
+  <p data-lang="en"><strong>Social Research Center</strong> · Colombia 2046 Survey Report · 299 participants · 2026</p>
+  <p style="margin-top:8px;" data-lang="es">Desde los Himalayas hasta los Andes: Conocimiento, Diálogo, Desarrollo</p>
+  <p style="margin-top:8px;" data-lang="en">From the Himalayas to the Andes: Knowledge, Dialogue, Development</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// TRANSLATIONS & DATA
+// ═══════════════════════════════════════════
+const T = {
+  es: {
+    generoLabels: ['Femenino', 'Masculino', 'Otro'],
+    edadLabels: ['16–29 años', '30–46 años', '47–65 años', 'Más de 65'],
+    hogarLabels: ['Supervivencia básica', 'Consumo básico', 'Estándar medio', 'Nivel cómodo', 'Abundancia'],
+    regionLabels: ['Gran metrópolis', 'Ciudad grande/mediana', 'Zona rural/pueblo', 'Costa Caribe', 'Costa Pacífica'],
+    profesionalLabels: ['Profesionales empleados', 'Educación', 'Empresariales/Emprendedores', 'Sector TI', 'Salud', 'Industrias creativas', 'Voluntarios/Activistas', 'Judicial', 'Fuerzas de seguridad', 'Ninguna/Otros', 'Agrícola', 'Energía'],
+    pasadoData: [['Compleja',142],['Inestable',122],['Dinámica',109],['Incierta',99],['Competitiva',85],['Sostenible',80],['Frágil',69]],
+    presenteData: [['Incierta',178],['Inestable',176],['Compleja',170],['Frágil',114],['Incomprensible',62],['Dinámica',60],['Ansiosa',50]],
+    futuroLabels: ['Sostenible','Empática','Dinámica','Competitiva','Interesante','Cierta','Predecible','Simple'],
+    riesgosData: [['Crisis económica y desigualdad',194],['Crisis climática y ecosistemas',175],['Conflictos geopolíticos',150],['Crisis de confianza institucional',135],['Retroceso del proceso de paz',123],['Cambios tecnológicos (IA)',62],['Desaparición del empleo tradicional',60]],
+    mitigacionLabels: ['Responsabilidad ambiental','Unión de estados, corp. y ciudadanía','Reforma institucional profunda','Nuevo sistema educativo','Renaturalización de la economía','Autoeducación continua','Digitalización equitativa','Los riesgos como prueba de resistencia'],
+    instLabels: ['Gobierno','Parlamento','Judicial','Policía/Ejército','Educación','Salud','Iglesia','Org. comunitarias','Academia','Empresas','Sector TI','Industrias creativas'],
+    instNames: ['Gobierno','Parlamento','Sistema judicial','Policía y ejército','Sistema educativo','Instituciones de salud','Iglesia','Org. comunitarias','Academia y ciencia','Empresas','Sector TI','Industrias creativas'],
+    vida20Labels: ['Futuro en Colombia','Emigración temporal','Sin horizonte claro','Emigración permanente','Transfronterizo'],
+    territorioLabels: ['Sin lugar específico','Ciudades medianas','Megaciudades','Zonas rurales posconflicto','Amazonía/Indígenas','Costas','Transfronterizas'],
+    politicaLabels: ['Derecha liberal','Derecha conservadora','Izquierda liberal','Izquierda conservadora','Anarco-Liberalismo','Anarco-Conservadurismo'],
+    feelings: [{e:'😰',n:'Incertidumbre',c:84},{e:'🌱',n:'Esperanza',c:49},{e:'😟',n:'Miedo / Temor',c:19},{e:'😔',n:'Preocupación',c:14},{e:'😤',n:'Ansiedad / Angustia',c:8},{e:'🧘',n:'Tranquilidad',c:5},{e:'😞',n:'Desilusión',c:2},{e:'🌟',n:'Optimismo',c:2}],
+    feelingWord: 'menciones',
+    car2046Labels: ['Prosperidad económica y trabajo digno','Pleno respeto de los derechos humanos','Paz sin grupos armados y narcotráfico','Equilibrio ecológico y ríos limpios','Avance tecnológico (economía verde/digital)','Estado eficaz con inst. modernas','Diversidad cultural y renac. espiritual'],
+    laboralLabels: ['Tecnología asume\ntrabajo rutinario','Trabajo más colectivo\ny comunitario','Mismo trabajo\nbajo supervisión de IA','Todo trasladado\nal ámbito online','Trabajo vinculado a\nrestauración ecosistemas','Todo igual, más\nburocracia','Mi grupo\ndesaparecerá'],
+    conflictoLabels: ['Libre de conflictos','Riesgo de conflicto futuro','Actualmente en conflicto','Posconflicto'],
+    ciudadLabels: ['Bogotá','Medellín','Bucaramanga','Floridablanca','Envigado','Girón','Sabaneta','Otras ciudades'],
+  },
+  en: {
+    generoLabels: ['Female', 'Male', 'Other'],
+    edadLabels: ['16–29 years', '30–46 years', '47–65 years', 'Over 65'],
+    hogarLabels: ['Basic survival', 'Basic consumption', 'Middle standard', 'Comfortable level', 'Abundance'],
+    regionLabels: ['Large metropolis', 'Large/medium city', 'Rural area/small town', 'Caribbean Coast', 'Pacific Coast'],
+    profesionalLabels: ['Employed professionals', 'Education', 'Business/Entrepreneurs', 'IT sector', 'Healthcare', 'Creative industries', 'Volunteers/Activists', 'Judicial', 'Security forces', 'None/Other', 'Agricultural', 'Energy sector'],
+    pasadoData: [['Complex',142],['Unstable',122],['Dynamic',109],['Uncertain',99],['Competitive',85],['Sustainable',80],['Fragile',69]],
+    presenteData: [['Uncertain',178],['Unstable',176],['Complex',170],['Fragile',114],['Incomprehensible',62],['Dynamic',60],['Anxious',50]],
+    futuroLabels: ['Sustainable','Empathetic','Dynamic','Competitive','Interesting','Certain','Predictable','Simple'],
+    riesgosData: [['Economic crisis & inequality',194],['Climate crisis & ecosystems',175],['Geopolitical conflicts',150],['Crisis of institutional trust',135],['Peace process setback',123],['Technological change (AI)',62],['Disappearance of traditional jobs',60]],
+    mitigacionLabels: ['Environmental responsibility','Union of states, corps. & citizens','Deep institutional reform','New education system','Re-naturalization of the economy','Continuous self-education','Equitable digitalization','Risks as a test of resilience'],
+    instLabels: ['Government','Parliament','Judiciary','Police/Army','Education','Healthcare','Church','Community orgs.','Academia','Businesses','IT Sector','Creative industries'],
+    instNames: ['Government','Parliament','Judicial system','Police & army','Education system','Healthcare institutions','Church','Community organizations','Academia & science','Businesses','IT Sector','Creative industries'],
+    vida20Labels: ['Future in Colombia','Temporary emigration','No clear horizon','Permanent emigration','Cross-border life'],
+    territorioLabels: ['No specific place','Medium-sized cities','Megacities','Rural post-conflict zones','Amazon/Indigenous','Coasts','Cross-border zones'],
+    politicaLabels: ['Liberal right','Conservative right','Liberal left','Conservative left','Anarcho-Liberalism','Anarcho-Conservatism'],
+    feelings: [{e:'😰',n:'Uncertainty',c:84},{e:'🌱',n:'Hope',c:49},{e:'😟',n:'Fear / Dread',c:19},{e:'😔',n:'Worry',c:14},{e:'😤',n:'Anxiety / Anguish',c:8},{e:'🧘',n:'Calm',c:5},{e:'😞',n:'Disillusion',c:2},{e:'🌟',n:'Optimism',c:2}],
+    feelingWord: 'mentions',
+    car2046Labels: ['Economic prosperity & dignified work','Full respect for human rights','Peace without armed groups & drug trafficking','Ecological balance & clean rivers','Technological advance (green/digital economy)','Effective state w/ modern institutions','Cultural diversity & spiritual renewal'],
+    laboralLabels: ['Technology takes over\nroutine work','Work more collective\n& community-based','Same work\nunder AI supervision','All work moved\nonline','Work tied to\necosystem restoration','Everything the same,\njust more paperwork','My sector\nwill disappear'],
+    conflictoLabels: ['Conflict-free','Risk of future conflict','Currently in conflict','Post-conflict'],
+    ciudadLabels: ['Bogotá','Medellín','Bucaramanga','Floridablanca','Envigado','Girón','Sabaneta','Other cities'],
+  }
+};
+
+// ═══════════════════════════════════════════
+// CHART REGISTRY
+// ═══════════════════════════════════════════
+const C = { tealDark:'#2C4F55', tealMid:'#3D6B72', tealLight:'#5BC8D5', tealPale:'#8DDEE6', creamDk:'#E4DDD4', gold:'#C9A96E', coral:'#D4756A', white:'#FFFFFF' };
+const PAL = [C.tealDark, C.tealMid, C.tealLight, C.tealPale, C.gold, C.coral, '#7FB5B9', '#A8D4D9', '#4A8990', '#8DC4CA'];
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = '#4A4A4A';
+
+const TT = { backgroundColor: C.tealDark, titleColor: C.tealLight, bodyColor: C.white };
+const baseOpts = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:TT } };
+
+// Total responses (single-answer questions)
+const N_TOTAL = 299;
+
+// Tooltip with percentage for single-response charts
+// vertical bars: value in ctx.parsed.y
+function ttWithPct(total) {
+  return {
+    backgroundColor: C.tealDark,
+    titleColor: C.tealLight,
+    bodyColor: C.white,
+    callbacks: {
+      label: function(ctx) {
+        const val = ctx.parsed.y;
+        const pct = Math.round(val / total * 100);
+        return ` ${val} (${pct}%)`;
+      }
+    }
+  };
+}
+
+// horizontal bars (indexAxis:'y'): value in ctx.parsed.x
+function ttWithPctH(total) {
+  return {
+    backgroundColor: C.tealDark,
+    titleColor: C.tealLight,
+    bodyColor: C.white,
+    callbacks: {
+      label: function(ctx) {
+        const val = ctx.parsed.x;
+        const pct = Math.round(val / total * 100);
+        return ` ${val} (${pct}%)`;
+      }
+    }
+  };
+}
+
+// For doughnut/pie (ctx.parsed is the value directly)
+function ttWithPctPie(total) {
+  return {
+    backgroundColor: C.tealDark,
+    titleColor: C.tealLight,
+    bodyColor: C.white,
+    callbacks: {
+      label: function(ctx) {
+        const val = ctx.parsed;
+        const pct = Math.round(val / total * 100);
+        return ` ${val} (${pct}%)`;
+      }
+    }
+  };
+}
+
+let charts = {};
+
+function destroyAll() {
+  Object.values(charts).forEach(c => { if(c) c.destroy(); });
+  charts = {};
+}
+
+function makeHBars(containerId, items, maxVal) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = '';
+  items.forEach(([label, val]) => {
+    const pct = Math.round(val / maxVal * 100);
+    c.innerHTML += `<div class="hbar-item">
+      <div class="hbar-label"><span>${label}</span><span class="val">${val}</span></div>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+}
+
+function buildFeelings(lang) {
+  const g = document.getElementById('feelings-grid');
+  if (!g) return;
+  g.innerHTML = '';
+  T[lang].feelings.forEach(f => {
+    g.innerHTML += `<div class="feeling-card">
+      <div class="feeling-emoji">${f.e}</div>
+      <div class="feeling-name">${f.n}</div>
+      <div class="feeling-count">${f.c} ${T[lang].feelingWord}</div>
+    </div>`;
+  });
+}
+
+function buildInstGrid(lang) {
+  const g = document.getElementById('inst-grid');
+  if (!g) return;
+  g.innerHTML = '';
+  const scores = [2.60,2.33,2.43,2.65,3.77,3.14,2.70,3.38,3.77,3.37,3.60,3.61];
+  T[lang].instNames.forEach((name, i) => {
+    const score = scores[i];
+    const dots = [1,2,3,4,5].map(d => {
+      const filled = d <= Math.floor(score);
+      const half = !filled && d === Math.ceil(score) && score % 1 !== 0;
+      return `<div class="dot${filled?' filled':half?' half':''}"></div>`;
+    }).join('');
+    const color = score >= 3.5 ? C.tealLight : score >= 3.0 ? C.tealMid : score >= 2.5 ? C.gold : C.coral;
+    g.innerHTML += `<div class="inst-item" style="border-left-color:${color}">
+      <div class="inst-name">${name}</div>
+      <div class="inst-score-row"><span class="inst-score">${score}</span><div class="inst-dots">${dots}</div></div>
+    </div>`;
+  });
+}
+
+function buildCharts(lang) {
+  destroyAll();
+  const t = T[lang];
+
+  // 1. Género (single response)
+  charts.genero = new Chart(document.getElementById('chartGenero'), {
+    type:'doughnut',
+    data:{ labels:t.generoLabels, datasets:[{ data:[169,129,1], backgroundColor:[C.tealLight,C.tealDark,C.tealPale], borderWidth:0 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:true,position:'bottom'}, tooltip:ttWithPctPie(N_TOTAL) }, cutout:'65%' }
+  });
+
+  // 2. Edad (single response)
+  charts.edad = new Chart(document.getElementById('chartEdad'), {
+    type:'bar',
+    data:{ labels:t.edadLabels, datasets:[{ data:[89,161,48,1], backgroundColor:[C.tealPale,C.tealDark,C.tealMid,C.gold], borderRadius:8 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:false}, tooltip:ttWithPct(N_TOTAL) }, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false}} } }
+  });
+
+  // 3. Hogar (single response)
+  charts.hogar = new Chart(document.getElementById('chartHogar'), {
+    type:'bar',
+    data:{ labels:t.hogarLabels, datasets:[{ data:[14,63,148,68,6], backgroundColor:PAL, borderRadius:8 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:false}, tooltip:ttWithPct(N_TOTAL) }, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false}, ticks:{font:{size:10}}} } }
+  });
+
+  // 4. Región (single response)
+  charts.region = new Chart(document.getElementById('chartRegion'), {
+    type:'doughnut',
+    data:{ labels:t.regionLabels, datasets:[{ data:[180,89,21,5,4], backgroundColor:[C.tealDark,C.tealMid,C.tealLight,C.tealPale,C.gold], borderWidth:0 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:true,position:'right',labels:{font:{size:11}}}, tooltip:ttWithPctPie(N_TOTAL) }, cutout:'55%' }
+  });
+
+  // 5. Profesional (single response)
+  charts.profesional = new Chart(document.getElementById('chartProfesional'), {
+    type:'bar',
+    data:{ labels:t.profesionalLabels, datasets:[{ data:[90,52,46,27,24,16,12,9,7,7,5,4], backgroundColor:PAL[0], borderRadius:4 }] },
+    options:{ ...baseOpts, indexAxis:'y', plugins:{ legend:{display:false}, tooltip:ttWithPctH(N_TOTAL) }, scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false}, ticks:{font:{size:10}}} } }
+  });
+
+  // HBars pasado/presente
+  makeHBars('hbar-pasado', t.pasadoData, t.pasadoData[0][1]);
+  makeHBars('hbar-presente', t.presenteData, t.presenteData[0][1]);
+
+  // 6. Futuro adjetivos
+  charts.futuro = new Chart(document.getElementById('chartFuturo'), {
+    type:'bar',
+    data:{ labels:t.futuroLabels, datasets:[{ data:[268,185,176,167,157,66,40,31], backgroundColor:PAL, borderRadius:6 }] },
+    options:{ ...baseOpts, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false}} } }
+  });
+
+  // HBars riesgos
+  makeHBars('hbar-riesgos', t.riesgosData, t.riesgosData[0][1]);
+
+  // 7. Mitigación
+  charts.mitigacion = new Chart(document.getElementById('chartMitigacion'), {
+    type:'bar',
+    data:{ labels:t.mitigacionLabels, datasets:[{ data:[193,181,166,160,62,49,37,9], backgroundColor:PAL[0], borderRadius:4 }] },
+    options:{ ...baseOpts, indexAxis:'y', scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false}, ticks:{font:{size:10}}} } }
+  });
+
+  // 8. Instituciones
+  const instScores = [2.60,2.33,2.43,2.65,3.77,3.14,2.70,3.38,3.77,3.37,3.60,3.61];
+  charts.instituciones = new Chart(document.getElementById('chartInstituciones'), {
+    type:'bar',
+    data:{ labels:t.instLabels, datasets:[{ data:instScores, backgroundColor:instScores.map(s=>s>=3.5?C.tealLight:s>=3.0?C.tealMid:s>=2.5?C.gold:C.coral), borderRadius:4 }] },
+    options:{ ...baseOpts, indexAxis:'y', scales:{ x:{min:0,max:5,grid:{color:C.creamDk}}, y:{grid:{display:false},ticks:{font:{size:10}}} } }
+  });
+  buildInstGrid(lang);
+
+  // 9. Vida 20 (single response)
+  charts.vida20 = new Chart(document.getElementById('chartVida20'), {
+    type:'doughnut',
+    data:{ labels:t.vida20Labels, datasets:[{ data:[184,59,33,15,8], backgroundColor:PAL, borderWidth:0 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:true,position:'bottom',labels:{font:{size:10}}}, tooltip:ttWithPctPie(N_TOTAL) }, cutout:'55%' }
+  });
+
+  // 10. Territorio (single response)
+  charts.territorio = new Chart(document.getElementById('chartTerritorio'), {
+    type:'bar',
+    data:{ labels:t.territorioLabels, datasets:[{ data:[101,76,67,43,5,5,2], backgroundColor:PAL, borderRadius:6 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:false}, tooltip:ttWithPct(N_TOTAL) }, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false},ticks:{font:{size:9}}} } }
+  });
+
+  // 11. Política (single response)
+  charts.politica = new Chart(document.getElementById('chartPolitica'), {
+    type:'doughnut',
+    data:{ labels:t.politicaLabels, datasets:[{ data:[105,83,64,35,7,5], backgroundColor:PAL, borderWidth:0 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:true,position:'bottom',labels:{font:{size:10}}}, tooltip:ttWithPctPie(N_TOTAL) }, cutout:'50%' }
+  });
+
+  // 12. Feelings
+  buildFeelings(lang);
+
+  // 13. Características 2046 (multi-response, horizontal)
+  charts.car2046 = new Chart(document.getElementById('chartCar2046'), {
+    type:'bar',
+    data:{ labels:t.car2046Labels, datasets:[{ data:[264,242,226,200,149,96,67], backgroundColor:PAL, borderRadius:6 }] },
+    options:{ ...baseOpts, indexAxis:'y', scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false},ticks:{font:{size:10}}} } }
+  });
+
+  // 14. Laboral
+  charts.laboral = new Chart(document.getElementById('chartLaboral'), {
+    type:'bar',
+    data:{ labels:t.laboralLabels, datasets:[{ data:[118,110,107,82,45,39,28], backgroundColor:PAL, borderRadius:6 }] },
+    options:{ ...baseOpts, scales:{ y:{grid:{color:C.creamDk}}, x:{grid:{display:false},ticks:{font:{size:9}}} } }
+  });
+
+  // 15. Conflicto (single response)
+  charts.conflicto = new Chart(document.getElementById('chartConflicto'), {
+    type:'pie',
+    data:{ labels:t.conflictoLabels, datasets:[{ data:[158,67,55,19], backgroundColor:[C.tealLight,C.gold,C.coral,C.tealDark], borderWidth:0 }] },
+    options:{ ...baseOpts, plugins:{ legend:{display:true,position:'bottom',labels:{font:{size:10}}}, tooltip:ttWithPctPie(N_TOTAL) } }
+  });
+
+  // 16. Ciudad de residencia (single response)
+  charts.ciudad = new Chart(document.getElementById('chartCiudad'), {
+    type:'bar',
+    data:{ labels:t.ciudadLabels, datasets:[{ data:[101,49,30,29,23,9,6,52], backgroundColor:PAL, borderRadius:6 }] },
+    options:{ ...baseOpts, indexAxis:'y', plugins:{ legend:{display:false}, tooltip:ttWithPctH(N_TOTAL) }, scales:{ x:{grid:{color:C.creamDk}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
+  });
+}
+
+// ═══════════════════════════════════════════
+// LANGUAGE TOGGLE
+// ═══════════════════════════════════════════
+let currentLang = 'es';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.body.classList.toggle('en', lang === 'en');
+  document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  buildCharts(lang);
+}
+
+// Init
+buildCharts('es');
+</script>
+</body>
+</html>
